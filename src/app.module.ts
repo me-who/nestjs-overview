@@ -9,11 +9,19 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { CrmModule } from './crm/crm.module';
 import { TraceIdMiddleware } from './middleware/trace-id.middleware';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ResInterceptor } from './interceptor/res.interceptor';
 
 @Module({
   imports: [UserModule, CrmModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResInterceptor,
+    },
+    AppService,
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
